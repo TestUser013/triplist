@@ -1,0 +1,340 @@
+* {
+    box-sizing: border-box;
+}
+
+html {
+    height: 100vh;
+}
+
+:root {
+    --clr-primary: hsl(0deg 0% 0%);
+    --clr-secondary: hsl(0deg 0% 90%);
+    --clr-primary-inverted: hsl(100, 70%, 70%);
+    --clr-loader: hsl(100, 70%, 70%);
+
+    --bg-clr-main: hsl(130, 75%, 15%);
+
+    --opacity: 0.9;
+    --bg-clr-debt: hsla(10, 60%, 60%, var(--opacity));
+    --bg-clr-selected: hsla(150, 100%, 20%, var(--opacity));
+    --bg-clr-unused: hsla(330, 0%, 30%, var(--opacity));
+
+    --clr-border: var(--clr-primary);
+    --clr-checkbox: var(--clr-primary);
+    --clr-checkbox-checked: var(--clr-loader);
+}
+
+body {
+    min-height: 100%;
+    font-family: monospace;
+    color: var(--clr-primary);
+}
+
+.background {
+    position: fixed;
+    inset: -4rem -4rem auto -4rem;
+    height: calc(100lvh + 16rem);
+    background-image: url("../images/background.png");
+    background-position: top center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    z-index: -1;
+}
+
+main {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding-inline: 1rem;
+}
+
+header {
+    padding-bottom: 1rem;
+}
+
+.header {
+    text-align: center;
+}
+
+.toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 1rem;
+}
+
+table {
+    font-size: 1rem;
+    border-collapse: collapse;
+    color: var(--clr-primary);
+    isolation: isolate;
+}
+
+thead {
+    position: sticky;
+    top: 0px;
+    background-color: var(--bg-clr-main);
+    color: var(--clr-primary-inverted);
+    z-index: 1;
+}
+
+th,
+tr {
+    border-bottom: 1px solid var(--clr-border);
+}
+
+tr {
+    background-color: var(--bg-clr-debt);
+}
+
+tr:last-child {
+    border-bottom: none;
+}
+
+th,
+td {
+    position: relative;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 1.6;
+    word-wrap: break-word;
+}
+
+th {
+    padding: 0.6rem 0.4rem;
+    user-select: none;
+}
+
+td {
+    padding: 0.6rem 0.6rem;
+}
+
+td:first-child {
+    text-align: left;
+}
+
+th {
+    cursor: pointer;
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+thead tr {
+    background-color: transparent;
+}
+
+th span {
+    font-size: 0.6rem;
+    color: var(--clr-secondary);
+}
+
+#reset {
+    background-color: var(--bg-clr-main);
+    margin: 0.2rem;
+    padding: 0.2rem 0.5rem;
+    color: var(--clr-primary-inverted);
+}
+
+.item-unused {
+    background-color: var(--bg-clr-unused) !important;
+    color: var(--clr-secondary);
+    transition: 0.4s;
+}
+
+.item-selected {
+    background-color: var(--bg-clr-selected);
+    transition: 0.4s;
+}
+
+.border-wrapper {
+    border-style: solid;
+    border-image-source: url("../images/border.svg");
+    border-image-slice: 15;
+    border-image-width: 1rem;
+    border-image-outset: 0.4rem;
+    border-image-repeat: stretch;
+    width: max-content;
+}
+
+@media (max-width: 780px) {
+    .border-wrapper {
+        width: auto;
+    }
+}
+
+@media (max-width: 600px) {
+    .border-wrapper {
+        width: auto;
+    }
+
+    #table tr {
+        display: grid;
+        grid-template:
+            "item group"
+            "footer side"
+            / auto 9rem;
+    }
+
+    #table :where(td, th):nth-child(2) {
+        color: var(--clr-secondary);
+    }
+
+    #table :where(td, th):nth-child(3) {
+        text-align: left;
+        padding-inline: 2rem;
+    }
+
+    #table td:nth-child(3) .circle-bar {
+        left: 4rem;
+    }
+}
+
+/* widgets */
+
+.up::before {
+    content: "\25B2";
+    font-size: 1rem;
+}
+
+.down::before {
+    content: "\25BC";
+    font-size: 1rem;
+}
+
+.none::before {
+    content: "\a0";
+    font-size: 1rem;
+}
+
+.checkbox {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.checkbox+span {
+    --size: 1.6rem;
+    --border: 0.2rem;
+
+    position: relative;
+    display: inline-block;
+    height: var(--size);
+    line-height: var(--size);
+    padding-left: var(--size);
+    cursor: pointer;
+    user-select: none;
+}
+
+.checkbox+span:before,
+.checkbox+span:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--size);
+    height: var(--size);
+    border: var(--border) solid var(--clr-checkbox);
+    border-radius: var(--border);
+    transition: 0.4s;
+}
+
+.checkbox:checked+span:before {
+    top: calc(-1 * var(--border));
+    left: calc(-1 * var(--border));
+    width: calc(var(--size) / 3);
+    height: var(--size);
+    border-top: var(--border) solid transparent;
+    border-left: var(--border) solid transparent;
+    border-right: var(--border) solid var(--clr-checkbox-checked);
+    border-bottom: var(--border) solid var(--clr-checkbox-checked);
+    transform: rotate(40deg);
+    transform-origin: 100% 100%;
+    backface-visibility: hidden;
+}
+
+.checkbox+span:after {
+    border: 0;
+    transform: scale(0);
+}
+
+.circle-bar {
+    --time: 1s;
+    --size: 1.6rem;
+    --border: 0.2rem;
+
+    top: calc(50% - var(--size) / 2);
+    left: 0;
+
+    position: absolute;
+    width: calc(var(--size) + 2 * var(--border));
+    height: calc(var(--size) + 2 * var(--border));
+    clip: rect(
+        0px,
+        calc(var(--size) + 2 * var(--border)),
+        calc(var(--size) + 2 * var(--border)),
+        calc((var(--size) + 2 * var(--border)) / 2)
+    );
+    animation-delay: calc(var(--time) / 2);
+    animation-name: close-wrapper;
+}
+
+.circle-bar .circle-bar-left,
+.circle-bar .circle-bar-right {
+    position: absolute;
+    width: var(--size);
+    height: var(--size);
+    border: var(--border) solid var(--clr-loader);
+    border-radius: calc((var(--size) + 2 * var(--border)) / 2);
+    clip: rect(
+        0px,
+        calc((var(--size) + 2 * var(--border)) / 2),
+        calc(var(--size) + 2 * var(--border)),
+        0px
+    );
+}
+
+.circle-bar,
+.circle-bar .circle-bar-left,
+.circle-bar .circle-bar-right {
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+    animation-timing-function: linear;
+}
+
+.circle-bar .circle-bar-left {
+    animation-duration: var(--time);
+    animation-name: left-spin;
+}
+
+.circle-bar .circle-bar-right {
+    animation-duration: calc(var(--time) / 2);
+    animation-name: right-spin;
+}
+
+@keyframes right-spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(180deg);
+    }
+}
+
+@keyframes left-spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes close-wrapper {
+    to {
+        clip: rect(auto, auto, auto, auto);
+    }
+}

@@ -1,0 +1,10 @@
+{
+    "name": "so_sandbox",
+    "scripts": {
+        "gulp": "gulp"
+    },
+    "devDependencies": {
+        "browser-sync": "2.29.3",
+        "gulp": "4.0.2"
+    }
+}
